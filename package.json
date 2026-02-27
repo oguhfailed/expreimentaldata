@@ -1,0 +1,17 @@
+{
+  "name": "js-ai-agent",
+  "version": "1.0.0",
+  "description": "A simple AI agent loop using the Anthropic SDK",
+  "type": "module",
+  "main": "agent.js",
+  "scripts": {
+    "start": "node agent.js",
+    "agent": "node agent.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
