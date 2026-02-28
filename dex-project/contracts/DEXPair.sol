@@ -110,9 +110,9 @@ contract DEXPair is ERC20, ReentrancyGuard, IDEXPair {
 
     /**
      * @notice Return the current reserves (pool balances) and the last-updated timestamp.
-     * @return reserve0            How many token0 are in the pool
-     * @return reserve1            How many token1 are in the pool
-     * @return blockTimestampLast  When the reserves were last synced (Unix seconds)
+     * @return _reserve0 How many token0 are in the pool
+     * @return _reserve1 How many token1 are in the pool
+     * @return _blockTimestampLast When the reserves were last synced (Unix seconds)
      */
     function getReserves()
         public
