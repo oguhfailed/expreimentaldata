@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Breakfast Notifier</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #ffecd2, #fcb69f);
+    }
+
+    .card {
+      background: white;
+      border-radius: 20px;
+      padding: 40px 50px;
+      text-align: center;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+      max-width: 400px;
+      width: 100%;
+    }
+
+    .emoji { font-size: 64px; margin-bottom: 16px; }
+
+    h1 { font-size: 1.6rem; color: #333; margin-bottom: 8px; }
+
+    #status {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin: 20px 0;
+      padding: 12px 20px;
+      border-radius: 10px;
+    }
+
+    .waiting  { background: #fff3cd; color: #856404; }
+    .time     { background: #d1ecf1; color: #0c5460; }
+    .past     { background: #d4edda; color: #155724; }
+
+    #clock {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: #555;
+      letter-spacing: 2px;
+      margin-bottom: 6px;
+    }
+
+    #countdown { color: #888; font-size: 0.95rem; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="emoji">🍳</div>
+    <h1>Breakfast Notifier</h1>
+
+    <div id="clock">--:--:--</div>
+
+    <div id="status" class="waiting">Loading...</div>
+    <div id="countdown"></div>
+  </div>
+
+  <script>
+    const BREAKFAST_HOUR   = 8;
+    const BREAKFAST_MINUTE = 30;
+
+    function pad(n) { return String(n).padStart(2, '0'); }
+
+    function tick() {
+      const now = new Date();
+      const h = now.getHours();
+      const m = now.getMinutes();
+      const s = now.getSeconds();
+
+      // Clock display
+      document.getElementById('clock').textContent =
+        `${pad(h)}:${pad(m)}:${pad(s)}`;
+
+      const nowMins = h * 60 + m;
+      const bfMins  = BREAKFAST_HOUR * 60 + BREAKFAST_MINUTE;
+      const statusEl    = document.getElementById('status');
+      const countdownEl = document.getElementById('countdown');
+
+      if (nowMins < bfMins) {
+        // Before breakfast
+        const diffMins = bfMins - nowMins - (s > 0 ? 1 : 0);
+        const dh = Math.floor(diffMins / 60);
+        const dm = diffMins % 60;
+        statusEl.textContent = '⏰ Breakfast starts at 8:30 AM';
+        statusEl.className   = 'waiting';
+        countdownEl.textContent =
+          dh > 0
+            ? `Starts in ${dh}h ${dm}m`
+            : `Starts in ${dm}m ${pad(60 - s)}s`;
+      } else if (h === BREAKFAST_HOUR && m === BREAKFAST_MINUTE) {
+        // Exactly breakfast time
+        statusEl.textContent = '🎉 Breakfast time! It\'s 8:30 AM!';
+        statusEl.className   = 'time';
+        countdownEl.textContent = 'Enjoy your breakfast!';
+      } else {
+        // After breakfast
+        const diffMins = nowMins - bfMins;
+        statusEl.textContent = '✅ Breakfast started at 8:30 AM';
+        statusEl.className   = 'past';
+        countdownEl.textContent = `Breakfast started ${diffMins} minute${diffMins !== 1 ? 's' : ''} ago`;
+      }
+    }
+
+    tick();
+    setInterval(tick, 1000);
+
+    // Browser notification at exactly 8:30 AM
+    if ('Notification' in window) {
+      Notification.requestPermission();
+    }
+
+    function scheduleNotification() {
+      const now  = new Date();
+      const next = new Date();
+      next.setHours(8, 30, 0, 0);
+      if (next <= now) next.setDate(next.getDate() + 1); // tomorrow if already past
+
+      const delay = next - now;
+      setTimeout(() => {
+        if (Notification.permission === 'granted') {
+          new Notification('🍳 Breakfast Time!', {
+            body: 'Breakfast starts now — it\'s 8:30 AM!',
+            icon: 'https://em-content.zobj.net/source/google/387/fried-egg_1f373.png'
+          });
+        }
+        scheduleNotification(); // re-schedule for next day
+      }, delay);
+    }
+
+    scheduleNotification();
+  </script>
+</body>
+</html>
