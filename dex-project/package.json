@@ -1,0 +1,24 @@
+{
+  "name": "dex-project",
+  "version": "1.0.0",
+  "description": "DEX with 30 ERC-20 tokens, AMM swaps, and Yield Farming",
+  "type": "commonjs",
+  "scripts": {
+    "compile": "npx hardhat compile",
+    "test": "npx hardhat test",
+    "deploy:local": "npx hardhat run scripts/deploy.js --network localhost",
+    "deploy:testnet": "npx hardhat run scripts/deploy.js --network sepolia",
+    "node": "npx hardhat node",
+    "swap": "npx hardhat run scripts/swap.js --network localhost",
+    "farm": "npx hardhat run scripts/farm.js --network localhost",
+    "liquidity": "npx hardhat run scripts/addLiquidity.js --network localhost"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "hardhat": "^2.22.0"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.0.0",
+    "dotenv": "^16.4.0"
+  }
+}
